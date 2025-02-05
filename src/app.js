@@ -16,7 +16,7 @@ const transporte = nodemailer.createTransport({
 // Função para enviar email
 const sendEmail = async (email, subject, texto) => {
     try {
-        const info = await transporte.sendMail({ // Corrigido aqui
+        const info = await transporte.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
             subject,
@@ -28,5 +28,11 @@ const sendEmail = async (email, subject, texto) => {
     }
 };
 
+// Lê argumentos da linha de comando
+const args = process.argv.slice(2); // Remove os dois primeiros argumentos
+const email = 'fagnersilveira86@gmail.com'; // Email fixo
+const subject = args[0] || 'Título Padrão'; // Primeiro argumento
+const texto = args[1] || 'Texto padrão'; // Segundo argumento
+
 // Teste: Enviar email
-sendEmail('fagnersilveira86@gmail.com', 'Teste', 'Teste');
+sendEmail(email, subject, texto);
