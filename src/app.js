@@ -1,38 +1,53 @@
+const express = require("express");
 const nodemailer = require("nodemailer");
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
+const cors = require("cors");
 
-// Carrega as variáveis de ambiente
+// Configuração do dotenv para variáveis de ambiente
 dotenv.config();
 
-// Criar transporte de email
+// Configuração do transporte de email
 const transporte = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
 });
 
-// Função para enviar email
-const sendEmail = async (email, subject, texto) => {
+// Inicializa o Express
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware para processar JSON e lidar com CORS
+app.use(express.json());
+app.use(cors());
+
+// Rota para enviar email
+app.post("/send-email", async (req, res) => {
+    const { subject, text } = req.body;
+    const email = "fagnersilveira86@gmail.com"; // Email fixo
+
+    if (!subject || !text) {
+        return res.status(400).json({ error: "Os campos 'subject' e 'text' são obrigatórios." });
+    }
+
     try {
         const info = await transporte.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
             subject,
-            text: texto
+            text,
         });
-        console.log('Email enviado: ', info.response);
+        console.log("Email enviado: ", info.response);
+        res.status(200).json({ message: "Email enviado com sucesso!" });
     } catch (error) {
-        console.log('Erro ao enviar email: ', error);
+        console.error("Erro ao enviar email: ", error);
+        res.status(500).json({ error: "Erro ao enviar email." });
     }
-};
+});
 
-// Lê argumentos da linha de comando
-const args = process.argv.slice(2); // Remove os dois primeiros argumentos
-const email = 'fagnersilveira86@gmail.com'; // Email fixo
-const subject = args[0] || 'Título Padrão'; // Primeiro argumento
-const texto = args[1] || 'Texto padrão'; // Segundo argumento
-
-// Teste: Enviar email
-sendEmail(email, subject, texto);
+// Inicia o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
