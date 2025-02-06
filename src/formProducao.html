@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testar API de E-mail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    form {
+      max-width: 400px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .response {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Testar API de Envio de E-mail</h1>
+  <form id="emailForm">
+    <label for="subject">Assunto:</label>
+    <input type="text" id="subject" name="subject" placeholder="Digite o assunto" required>
+
+    <label for="text">Mensagem:</label>
+    <textarea id="text" name="text" placeholder="Digite sua mensagem" rows="5" required></textarea>
+
+    <button type="submit">Enviar E-mail</button>
+  </form>
+
+  <div id="response" class="response" style="display: none;"></div>
+
+  <script>
+    document.getElementById("emailForm").addEventListener("submit", async function(event) {
+      event.preventDefault(); // Impede o recarregamento da página
+
+      // Pega os valores dos campos
+      const subject = document.getElementById("subject").value;
+      const text = document.getElementById("text").value;
+
+      // Configura a requisição para a API
+      const url = "https://api-email-fagner.glitch.me/send-email";
+      const data = {
+        subject: subject,
+        text: text
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        // Exibe a resposta da API
+        const result = await response.json();
+        const responseDiv = document.getElementById("response");
+        if (response.ok) {
+          responseDiv.style.display = "block";
+          responseDiv.style.color = "green";
+          responseDiv.textContent = result.message || "E-mail enviado com sucesso!";
+        } else {
+          responseDiv.style.display = "block";
+          responseDiv.style.color = "red";
+          responseDiv.textContent = result.error || "Erro ao enviar o e-mail.";
+        }
+      } catch (error) {
+        console.error("Erro:", error);
+        const responseDiv = document.getElementById("response");
+        responseDiv.style.display = "block";
+        responseDiv.style.color = "red";
+        responseDiv.textContent = "Erro ao conectar à API.";
+      }
+    });
+  </script>
+</body>
+</html>
