@@ -23,6 +23,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
+// Rota raiz
+app.get("/", (req, res) => {
+  res.send("Bem-vindo à API de envio de e-mails! Use o endpoint POST /send-email para enviar um e-mail.");
+});
+
 // Rota para enviar email
 app.post("/send-email", async (req, res) => {
     const { subject, text } = req.body;
