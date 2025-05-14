@@ -10,8 +10,11 @@ dotenv.config();
 const transporte = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        // user: process.env.EMAIL_USER,
+        // pass: process.env.EMAIL_PASS,
+
+        user: 'fagnersilveira86@gmail.com',
+        pass: 'cfyd tovp ayyg fsgf',
     },
 });
 
@@ -30,6 +33,8 @@ app.get("/", (req, res) => {
 
 // Rota para enviar email
 app.post("/send-email", async (req, res) => {
+    console.log(process.env.EMAIL_USER);
+    console.log(process.env.EMAIL_PASS);
     const { subject, text } = req.body;
     const email = "fagnersilveira86@gmail.com"; // Email fixo
 
@@ -48,7 +53,7 @@ app.post("/send-email", async (req, res) => {
         res.status(200).json({ message: "Email enviado com sucesso!" });
     } catch (error) {
         console.error("Erro ao enviar email: ", error);
-        res.status(500).json({ error: "Erro ao enviar email." });
+        res.status(500).json({ error: "Erro ao enviar email.", details: error.message });
     }
 });
 
