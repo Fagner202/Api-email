@@ -3,10 +3,12 @@ const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
-// Configuração do dotenv para variáveis de ambiente
-dotenv.config({ path: "../.env" });
+dotenv.config();
 
-// Configuração do transporte de email
+const app = express();
+app.use(express.json());
+app.use(cors());
+
 const transporte = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -15,23 +17,14 @@ const transporte = nodemailer.createTransport({
     },
 });
 
-// Inicializa o Express
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware para processar JSON e lidar com CORS
-app.use(express.json());
-app.use(cors());
-
-// Rota raiz
 app.get("/", (req, res) => {
-  res.send("Bem-vindo à API de envio de e-mails! Use o endpoint POST /send-email para enviar um e-mail.");
+  res.send("Bem-vindo à API de envio de e-mails! Use o endpoint POST /api/send-email.");
 });
 
-// Rota para enviar email
 app.post("/send-email", async (req, res) => {
     console.log(process.env.EMAIL_USER);
     console.log(process.env.EMAIL_PASS);
+
     const { subject, text } = req.body;
     const email = "fagnersilveira86@gmail.com"; // Email fixo
 
@@ -54,7 +47,4 @@ app.post("/send-email", async (req, res) => {
     }
 });
 
-// Inicia o servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+module.exports = app;
