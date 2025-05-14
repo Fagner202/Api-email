@@ -4,17 +4,14 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 // Configuração do dotenv para variáveis de ambiente
-dotenv.config();
+dotenv.config({ path: "../.env" });
 
 // Configuração do transporte de email
 const transporte = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        // user: process.env.EMAIL_USER,
-        // pass: process.env.EMAIL_PASS,
-
-        user: 'fagnersilveira86@gmail.com',
-        pass: 'cfyd tovp ayyg fsgf',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
 });
 
